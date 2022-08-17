@@ -34,8 +34,9 @@ export class UserController {
     //   pwd: pwd,
     //   age: 14,
     // };
-    const optLogger = this.ctx.getLogger('operateLog');
-    optLogger.error('custom info');
+    const optLogger = this.ctx.getLogger('operateLogger');
+    optLogger.error('测试打印日志。。。');
+    // this.logger.error('logger');
     // console.log(this.environmentService.isDevelopmentEnvironment());
     // console.log(this.configService.getConfiguration());
     return {

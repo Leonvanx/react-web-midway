@@ -1,4 +1,4 @@
-import { Configuration, App, Logger } from '@midwayjs/decorator';
+import { Configuration, App } from '@midwayjs/decorator';
 import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
@@ -8,7 +8,6 @@ import { DefaultErrorFilter } from './filter/default.filter';
 import { NotFoundFilter } from './filter/notfound.filter';
 import { ReportMiddleware } from './middleware/report.middleware';
 import { ILifeCycle } from '@midwayjs/core';
-import { ILogger } from '@midwayjs/logger';
 
 dotenv.config();
 @Configuration({
@@ -26,9 +25,6 @@ export class ContainerLifeCycle implements ILifeCycle {
   @App()
   app: koa.Application;
 
-  @Logger()
-  logger: ILogger;
-
   async onConfigLoad(): Promise<void> {}
   async onReady() {
     // add middleware
@@ -37,7 +33,7 @@ export class ContainerLifeCycle implements ILifeCycle {
     this.app.useFilter([NotFoundFilter, DefaultErrorFilter]);
   }
   async onServerReady(): Promise<void> {
-    this.logger.info('appServer is ready');
+    console.info('appServer is ready');
   }
   async onStop(): Promise<void> {
     console.log('app is stop');
