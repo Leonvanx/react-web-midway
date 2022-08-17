@@ -11,6 +11,7 @@ export default {
       coreLogger: {},
       appLogger: {},
       operateLogger: {
+        enableConsole: false,
         dir: './logs/operate_logs',
         errorDir: './logs/operate_error_logs',
         fileLogName: `${os.hostname()}_operatelog.log`,
@@ -26,7 +27,7 @@ export default {
       const ctx = info.ctx;
       return `${info.timestamp} ${info.LEVEL} ${info.pid} ${
         Date.now() - ctx.startTime
-      }ms [${ctx.method} ${ctx.url} ${ctx.hosipstname}] ${info.message}`;
+      }ms [${ctx.method} ${ctx.url} ${ctx.hostname}] ${info.message}`;
     },
     port: process.env.PORT || 7001,
   },
