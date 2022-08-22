@@ -28,20 +28,21 @@ export class UserController {
 
   @Post('/login')
   async loginUser(@Body() body): Promise<ISuccessResult<any>> {
-    // const { userName, pwd } = body;
-    // const aUser: IUser = {
-    //   userName: userName,
-    //   pwd: pwd,
-    //   age: 14,
-    // };
+    const { userName, pwd } = body;
+    const aUser: IUser = {
+      userName: userName,
+      pwd: pwd,
+      age: 14,
+    };
     const optLogger = this.ctx.getLogger('operateLogger');
     optLogger.error('测试打印日志。。。');
     // this.logger.error('logger');
     // console.log(this.environmentService.isDevelopmentEnvironment());
     // console.log(this.configService.getConfiguration());
     return {
-      code: -1,
-      message: '密码错误',
+      code: 0,
+      message: '登陆成功',
+      result: aUser,
     };
   }
   @Get('/getUserInfo')
