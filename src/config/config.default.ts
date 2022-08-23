@@ -31,4 +31,10 @@ export default {
     },
     port: process.env.PORT || 7001,
   },
+  // 对象存储密钥配置
+  OSSConfig: {
+    APP_ID: process.env.REACT_WEB_COS_APP_ID,
+    SECRET_ID: process.env.REACT_WEB_COS_SECRET_ID,
+    SECRET_KEY: process.env.REACT_WEB_COS_SECRET_KEY,
+  },
 } as MidwayConfig;

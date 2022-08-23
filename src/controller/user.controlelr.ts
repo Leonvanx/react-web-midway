@@ -1,4 +1,3 @@
-import { ISuccessResult } from './../interface';
 import {
   Body,
   Controller,
@@ -7,42 +6,36 @@ import {
   Post,
   Query,
 } from '@midwayjs/decorator';
-import { IUser } from '../interface';
-import {
-  ILogger,
-  MidwayConfigService,
-  MidwayEnvironmentService,
-} from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
+import { cos } from './../client/ossClient';
+import { ISuccessResult, IUser } from './../interface';
 
 @Controller('/user')
 export class UserController {
   @Inject()
   ctx: Context;
-  @Inject()
-  logger: ILogger;
-  @Inject()
-  environmentService: MidwayEnvironmentService;
-  @Inject()
-  configService: MidwayConfigService;
 
   @Post('/login')
   async loginUser(@Body() body): Promise<ISuccessResult<any>> {
-    const { userName, pwd } = body;
+    const { userEmail, userPwd } = body;
     const aUser: IUser = {
-      userName: userName,
-      pwd: pwd,
+      userName: userEmail,
+      pwd: userPwd,
       age: 14,
     };
-    const optLogger = this.ctx.getLogger('operateLogger');
-    optLogger.error('测试打印日志。。。');
-    // this.logger.error('logger');
+    // const optLogger = this.ctx.getLogger('operateLogger');
+    // optLogger.error('测试打印日志。。。');
+    let bucketData = null;
+    await cos.getService(null, (_err, data) => {
+      bucketData = data.Buckets;
+      console.log(data.Buckets);
+    });
     // console.log(this.environmentService.isDevelopmentEnvironment());
     // console.log(this.configService.getConfiguration());
     return {
       code: 0,
       message: '登陆成功',
-      result: aUser,
+      result: { ...aUser, bucketData: bucketData },
     };
   }
   @Get('/getUserInfo')
