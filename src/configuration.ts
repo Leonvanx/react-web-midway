@@ -3,6 +3,7 @@ import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
 import * as dotenv from 'dotenv';
+import * as cos from '@midwayjs/cos';
 import { join } from 'path';
 import { DefaultErrorFilter } from './filter/default.filter';
 import { NotFoundFilter } from './filter/notfound.filter';
@@ -18,6 +19,7 @@ dotenv.config();
       component: info,
       enabledEnvironment: ['local'],
     },
+    cos,
   ],
   importConfigs: [join(__dirname, './config')],
 })

@@ -1,13 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Inject,
-  Post,
-  Query,
-} from '@midwayjs/decorator';
+import { Body, Controller, Get, Inject, Post, Query, Redirect } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
-import { cos } from './../client/ossClient';
+// import cos from './../client/ossClient';
 import { ISuccessResult, IUser } from './../interface';
 
 @Controller('/user')
@@ -16,6 +9,7 @@ export class UserController {
   ctx: Context;
 
   @Post('/login')
+  @Redirect('/ex1', 302)
   async loginUser(@Body() body): Promise<ISuccessResult<any>> {
     const { userEmail, userPwd } = body;
     const aUser: IUser = {
@@ -25,11 +19,11 @@ export class UserController {
     };
     // const optLogger = this.ctx.getLogger('operateLogger');
     // optLogger.error('测试打印日志。。。');
-    let bucketData = null;
-    await cos.getService(null, (_err, data) => {
-      bucketData = data.Buckets;
-      console.log(data.Buckets);
-    });
+    const bucketData = null;
+    // await cos.getService(null, (_err, data) => {
+    //   bucketData = data.Buckets;
+    //   console.log(data.Buckets);
+    // });
     // console.log(this.environmentService.isDevelopmentEnvironment());
     // console.log(this.configService.getConfiguration());
     return {

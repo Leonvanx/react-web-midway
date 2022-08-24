@@ -1,4 +1,5 @@
 import COS = require('cos-nodejs-sdk-v5');
+import fs = require('fs');
 
 const cos = new COS({
   SecretId: process.env.REACT_WEB_COS_SECRET_ID || '',
@@ -6,14 +7,14 @@ const cos = new COS({
 });
 /* 自己封装的上传方法 */
 
-const myUpload = () => {
+const myUpload = (bucketName: string, Region: string, fileKey: string, fileUrl: string) => {
   cos.putObject(
     {
-      Bucket: 'xulf-oss-1256971899' /* 必须 */,
-      Region: 'ap-shanghai' /* 必须 */,
-      Key: 'exampleobject' /* 必须 */,
+      Bucket: bucketName || 'xulf-oss-1256971899',
+      Region: Region || 'ap-shanghai',
+      Key: fileKey,
       StorageClass: 'STANDARD',
-      Body: fs.createReadStream('./exampleobject'), // 上传文件对象
+      Body: fs.createReadStream(fileUrl), // 上传文件对象
       onProgress: function (progressData) {
         console.log(JSON.stringify(progressData));
       },
@@ -25,11 +26,12 @@ const myUpload = () => {
 };
 
 /* 自己封装的删除方法 */
-const myDelete = () => {
+const myDelete = (bucketName: string, Region: string, fileKey: string) => {
   cos.deleteObject({
-    Bucket: '',
-    Region: '',
-    Key: '',
+    Bucket: bucketName || 'xulf-oss-1256971899',
+    Region: Region || 'ap-shanghai',
+    Key: fileKey,
   });
 };
-export { cos, myUpload, myDelete };
+export { myUpload, myDelete };
+export default cos;
