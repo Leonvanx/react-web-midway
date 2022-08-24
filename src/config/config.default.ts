@@ -1,6 +1,8 @@
 import { MidwayConfig } from '@midwayjs/core';
 const os = require('os');
 export default {
+  hostname: process.env.HOST || '127.0.0.1',
+  // 日志配置
   midwayLogger: {
     default: {
       format: info => {
@@ -19,22 +21,23 @@ export default {
       },
     },
   },
-  // use for cookie sign key, should change to your own and keep security
-  keys: 'react-web-session',
-  hostname: process.env.HOST || '127.0.0.1',
+  // koa上下文日志格式配置
   koa: {
     contextLoggerFormat: info => {
       const ctx = info.ctx;
-      return `${info.timestamp} ${info.LEVEL} ${info.pid} ${
-        Date.now() - ctx.startTime
-      }ms [${ctx.method} ${ctx.url} ${ctx.hostname}] ${info.message}`;
+      return `${info.timestamp} ${info.LEVEL} ${info.pid} ${Date.now() - ctx.startTime}ms [${ctx.method} ${ctx.url} ${
+        ctx.hostname
+      }] ${info.message}`;
     },
     port: process.env.PORT || 7001,
   },
-  // 对象存储密钥配置
-  OSSConfig: {
-    APP_ID: process.env.REACT_WEB_COS_APP_ID,
-    SECRET_ID: process.env.REACT_WEB_COS_SECRET_ID,
-    SECRET_KEY: process.env.REACT_WEB_COS_SECRET_KEY,
+  // use for cookie sign key, should change to your own and keep security
+  keys: 'react-web-session',
+  // 腾讯云对象存储密钥配置
+  cos: {
+    client: {
+      SecretId: '***********',
+      SecretKey: '***********',
+    },
   },
 } as MidwayConfig;
