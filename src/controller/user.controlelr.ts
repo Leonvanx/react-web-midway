@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post, Query, Redirect } from '@midwayjs/decorator';
+import { Body, Controller, Get, Inject, Post, Query } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
 // import cos from './../client/ossClient';
 import { ISuccessResult, IUser } from './../interface';
@@ -9,7 +9,6 @@ export class UserController {
   ctx: Context;
 
   @Post('/login')
-  @Redirect('/ex1', 302)
   async loginUser(@Body() body): Promise<ISuccessResult<any>> {
     const { userEmail, userPwd } = body;
     const aUser: IUser = {
