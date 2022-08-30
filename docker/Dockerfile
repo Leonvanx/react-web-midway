@@ -2,10 +2,6 @@
 
 FROM node:17.4.0
 
-ENV NODE_ENV=production
+WORKDIR /project
 
-WORKDIR /project/react-web-midway
-
-COPY . .
-
-# ENTRYPOINT [ "/docker/docker-entrypoint.sh" ]
+COPY ./node_modules ./node_modules
