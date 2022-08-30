@@ -8,4 +8,4 @@ WORKDIR /project/react-web-midway
 
 COPY . .
 
-ENTRYPOINT [ "./docker/docker-entrypoint.sh" ]
+# ENTRYPOINT [ "/docker/docker-entrypoint.sh" ]

@@ -1,7 +1,7 @@
 git checkout . && git pull
 
-npm run build
+npm run build & mv ./dist ../docker
 
 version_tag = `date +%Y.%m%d.%H.%M`
 
-docker build -t project/react-web-midway:${version_tag} -f /project/react-web-midway/docker/Dockerfile .
+# docker build -t project/react-web-midway
