@@ -10,5 +10,7 @@ EXPOSE 30000
 # COPY代码
 COPY . .
 
-ENTRYPOINT ["/project/react-web-midway/docker/docker-entrypoint.sh" ]
+RUN chown xulf /project/react-web-midway/docker/docker-entrypoint.sh
+
+# ENTRYPOINT ["/project/react-web-midway/docker/docker-entrypoint.sh" ]
 
