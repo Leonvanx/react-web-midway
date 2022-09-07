@@ -33,6 +33,11 @@ export default {
   },
   // use for cookie sign key, should change to your own and keep security
   keys: 'react-web-session',
+  // JWT配置
+  jwt: {
+    secret: 'react-web-midway-jwt', // fs.readFileSync('xxxxx.key')
+    expiresIn: '1d', // https://github.com/vercel/ms
+  },
   // 腾讯云对象存储密钥配置
   cos: {
     client: {
