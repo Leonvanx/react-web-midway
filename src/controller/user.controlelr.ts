@@ -29,7 +29,7 @@ export class UserController {
     // console.log(this.environmentService.isDevelopmentEnvironment());
     // console.log(this.configService.getConfiguration());
 
-    const token = 'Bearer ' + this.jwtService.signSync(aUser, 'react-web-midway-jwt', { expiresIn: '1d' });
+    const token = this.jwtService.signSync(aUser, 'react-web-midway-jwt', { expiresIn: '1d' });
     return {
       code: 0,
       message: '登陆成功',
