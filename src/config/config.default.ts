@@ -21,8 +21,8 @@ export default {
       },
     },
   },
-  // koa上下文日志格式配置
   koa: {
+    //上下文日志格式配置
     contextLoggerFormat: info => {
       const ctx = info.ctx;
       return `${info.timestamp} ${info.LEVEL} ${info.pid} ${Date.now() - ctx.startTime}ms [${ctx.method} ${ctx.url} ${

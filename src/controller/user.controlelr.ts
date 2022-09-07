@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
 // import cos from './../client/ossClient';
-import { ISuccessResult, IUser } from './../interface';
+import { ISuccessResult, IUser } from '../interface';
 
 @Controller('/user')
 export class UserController {
