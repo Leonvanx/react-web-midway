@@ -29,7 +29,7 @@ export class UserController {
     // console.log(this.environmentService.isDevelopmentEnvironment());
     // console.log(this.configService.getConfiguration());
 
-    const token = this.jwtService.signSync(aUser, 'react-web-midway-jwt', { expiresIn: '1d' });
+    const token = this.jwtService.signSync(aUser);
     return {
       code: 0,
       message: '登陆成功',
@@ -37,13 +37,17 @@ export class UserController {
     };
   }
   @Get('/getUserInfo')
-  async getUser(@Query('id') id: number): Promise<IUser> {
+  async getUser(@Query('id') id: number): Promise<ISuccessResult<IUser>> {
     const aUser: IUser = {
       uid: id,
       userName: '四1',
       pwd: 'AC24',
       age: 14,
     };
-    return aUser;
+    return {
+      code: 0,
+      message: '',
+      result: aUser,
+    };
   }
 }
