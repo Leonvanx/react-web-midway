@@ -16,13 +16,13 @@ export class JwtMiddleware {
     return async (ctx: Context, next: NextFunction) => {
       // 判断下有没有校验信息
       if (!ctx.headers['authorization']) {
-        throw new httpError.UnauthorizedError();
+        throw new httpError.UnauthorizedError('用户未授权');
       }
       // 从 header 上获取校验信息
       const parts = ctx.get('authorization').trim().split(' ');
 
       if (parts.length !== 2) {
-        throw new httpError.UnauthorizedError();
+        throw new httpError.UnauthorizedError('用户信息已过期，请重新登录');
       }
 
       const [scheme, token] = parts;
@@ -35,6 +35,7 @@ export class JwtMiddleware {
           });
         } catch (error) {
           //token过期 生成新的token
+          throw new httpError.UnauthorizedError('用户信息已过期，请重新登录!');
           // const newToken = this.jwtService.signSync(payload, secretOrPrivateKey, { algorithm: 'RS256' });
           //将新token放入Authorization中返回给前端
           // ctx.set('Authorization', 'Bearer ' + newToken);

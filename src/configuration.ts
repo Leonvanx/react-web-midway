@@ -8,6 +8,7 @@ import * as jwt from '@midwayjs/jwt';
 import { join } from 'path';
 import { DefaultErrorFilter } from './filter/default.filter';
 import { NotFoundFilter } from './filter/notfound.filter';
+import { UnauthorizedFilter } from './filter/unauthorized.filter';
 import { ReportMiddleware } from './middleware/report.middleware';
 import { JwtMiddleware } from './middleware/jwt.middleware';
 import { ILifeCycle } from '@midwayjs/core';
@@ -35,7 +36,7 @@ export class ContainerLifeCycle implements ILifeCycle {
     // add middleware
     this.app.useMiddleware([ReportMiddleware, JwtMiddleware]);
     // add filter
-    this.app.useFilter([NotFoundFilter, DefaultErrorFilter]);
+    this.app.useFilter([NotFoundFilter, DefaultErrorFilter, UnauthorizedFilter]);
   }
   async onServerReady(): Promise<void> {
     console.info('appServer is ready');
