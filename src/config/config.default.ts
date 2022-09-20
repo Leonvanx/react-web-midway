@@ -2,6 +2,33 @@ import { MidwayConfig } from '@midwayjs/core';
 const os = require('os');
 export default {
   hostname: process.env.HOST || '127.0.0.1',
+  // JWT配置
+  jwt: {
+    secret: 'react-web-midway-jwt', // fs.readFileSync('xxxxx.key')
+    expiresIn: '1d', // https://github.com/vercel/ms
+  },
+  // typeorm配置
+  typeorm: {
+    dataSource: {
+      default: {
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'xulf',
+        password: 'xulf@mysql',
+        database: 'xulfDev',
+        synchronize: false,
+        logging: false,
+      },
+    },
+  },
+  // 腾讯云对象存储密钥配置
+  cos: {
+    client: {
+      SecretId: '***********',
+      SecretKey: '***********',
+    },
+  },
   // 日志配置
   midwayLogger: {
     default: {
@@ -33,16 +60,4 @@ export default {
   },
   // use for cookie sign key, should change to your own and keep security
   keys: 'react-web-session',
-  // JWT配置
-  jwt: {
-    secret: 'react-web-midway-jwt', // fs.readFileSync('xxxxx.key')
-    expiresIn: '1d', // https://github.com/vercel/ms
-  },
-  // 腾讯云对象存储密钥配置
-  cos: {
-    client: {
-      SecretId: '***********',
-      SecretKey: '***********',
-    },
-  },
 } as MidwayConfig;

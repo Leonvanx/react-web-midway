@@ -5,13 +5,18 @@ import * as info from '@midwayjs/info';
 import * as dotenv from 'dotenv';
 import * as cos from '@midwayjs/cos';
 import * as jwt from '@midwayjs/jwt';
+import * as orm from '@midwayjs/typeorm';
+
 import { join } from 'path';
+
 import { DefaultErrorFilter } from './filter/default.filter';
 import { NotFoundFilter } from './filter/notfound.filter';
 import { UnauthorizedFilter } from './filter/unauthorized.filter';
+
 import { ReportMiddleware } from './middleware/report.middleware';
 import { JwtMiddleware } from './middleware/jwt.middleware';
-import { ILifeCycle } from '@midwayjs/core';
+
+import { ILifeCycle, IMidwayContainer } from '@midwayjs/core';
 
 dotenv.config();
 @Configuration({
@@ -24,6 +29,7 @@ dotenv.config();
     },
     cos,
     jwt,
+    orm,
   ],
   importConfigs: [join(__dirname, './config')],
 })
@@ -32,7 +38,7 @@ export class ContainerLifeCycle implements ILifeCycle {
   app: koa.Application;
 
   async onConfigLoad(): Promise<void> {}
-  async onReady() {
+  async onReady(container: IMidwayContainer) {
     // add middleware
     this.app.useMiddleware([ReportMiddleware, JwtMiddleware]);
     // add filter
