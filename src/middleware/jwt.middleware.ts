@@ -47,7 +47,9 @@ export class JwtMiddleware {
 
   // 配置忽略鉴权的路由地址
   public match(ctx: Context): boolean {
-    const ignore = ctx.path.indexOf('/user/login') !== -1;
-    return !ignore;
+    const ignoreUrlArr = ['/user/login', '/user/register'];
+    for (const item of ignoreUrlArr) {
+      if (ctx.path.indexOf(item) !== -1) return false;
+    }
   }
 }
