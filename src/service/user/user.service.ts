@@ -1,7 +1,9 @@
 import { Provide } from '@midwayjs/decorator';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entity/user';
+
+import { User } from '../../entity/user';
+import { GlobalResultCodeEnum, GlobalResultMessageEnum } from '../../enums/httpEnum';
 
 @Provide()
 export class UserService {
@@ -10,15 +12,13 @@ export class UserService {
 
   async insertUser(userData: User) {
     try {
-      const userResult = await this.userRepo.save(userData);
-      console.log('user id = ', userResult.userId);
+      await this.userRepo.save(userData);
       return {
-        username: 'mockedName',
-        phone: '12345678901',
-        email: 'xxx.xxx@xxx.com',
+        code: GlobalResultCodeEnum.SUCCESS,
+        message: GlobalResultMessageEnum.SUCCESS,
       };
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   }
 }
