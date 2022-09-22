@@ -1,3 +1,4 @@
+// import { User } from './../entity/user';
 import { MidwayConfig } from '@midwayjs/core';
 const os = require('os');
 export default {
@@ -19,6 +20,9 @@ export default {
         database: 'xulfDev',
         synchronize: false,
         logging: false,
+
+        // 配置实体模型 - 路径扫描方式
+        entities: ['/entity'],
       },
     },
   },
