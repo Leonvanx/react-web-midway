@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Inject, Post, Query } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
-// import cos from './../client/ossClient';
 import { JwtService } from '@midwayjs/jwt';
 
 import { User } from '../../entity/user';
@@ -23,21 +22,6 @@ export class UserController {
 
   @Post('/login')
   async loginUser(@Body() body): Promise<ISuccessResult<any>> {
-    // const { userEmail, userPwd } = body;
-    // const aUser: IUser = {
-    //   userName: userEmail,
-    //   pwd: userPwd,
-    //   age: 14,
-    // };
-
-    // const bucketData = null;
-    // await cos.getService(null, (_err, data) => {
-    //   bucketData = data.Buckets;
-    //   console.log(data.Buckets);
-    // });
-    // console.log(this.environmentService.isDevelopmentEnvironment());
-    // console.log(this.configService.getConfiguration());
-    // const token = this.jwtService.signSync(aUser);
     return {
       code: 0,
       message: '登陆成功',
