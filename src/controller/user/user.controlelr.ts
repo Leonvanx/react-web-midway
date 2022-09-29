@@ -53,7 +53,6 @@ export class UserController {
       userEmail: userEmail,
       userPhone: userPhone,
       userPwd: userPwd,
-      create_time: new Date(),
     };
     try {
       const result = await this.userService.insertUser(user);
@@ -66,33 +65,6 @@ export class UserController {
         message: GlobalResultMessageEnum.ERROR,
       };
     }
-
-    // const prisma = new PrismaClient();
-
-    // async function main() {
-    //   const result = await prisma.t_user.update({
-    //     where: { userId: 110 },
-    //     data: { userEmail: 'tees@.c' },
-    //   });
-    //   return result;
-    // }
-    // return main()
-    //   .then(async r => {
-    //     await prisma.$disconnect();
-    //     console.log(r);
-    //     return {
-    //       code: 0,
-    //       message: '注册成功',
-    //     };
-    //   })
-    //   .catch(async e => {
-    //     console.error(e);
-    //     await prisma.$disconnect();
-    //     return {
-    //       code: GlobalResultCodeEnum.ERROR,
-    //       message: GlobalResultMessageEnum.ERROR,
-    //     };
-    //   });
   }
 
   @Post('/updateUserInfo')
@@ -100,11 +72,7 @@ export class UserController {
     const userInfo: User = body;
     try {
       const updateRes = await this.userService.updateUserById(userInfo);
-      return {
-        code: 0,
-        message: '',
-        result: updateRes,
-      };
+      return updateRes;
     } catch (error) {
       const optLogger = this.ctx.getLogger('operateLogger');
       optLogger.error(error);
@@ -120,8 +88,8 @@ export class UserController {
     try {
       const allUsers = await this.userService.queryAllUser();
       return {
-        code: 0,
-        message: '',
+        code: GlobalResultCodeEnum.SUCCESS,
+        message: GlobalResultMessageEnum.SUCCESS,
         result: allUsers,
       };
     } catch (error) {
