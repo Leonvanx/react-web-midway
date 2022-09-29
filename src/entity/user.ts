@@ -26,24 +26,26 @@ export class User {
   userEmail: string;
 
   @Column({
-    length: 100,
-    name: 'user_address',
-  })
-  userAddress?: string;
-
-  @Column({
     length: 128,
     name: 'user_pwd',
   })
   userPwd: string;
 
-  @CreateDateColumn({
-    name: 'create_time',
+  @Column({
+    length: 100,
+    name: 'user_address',
   })
-  createTime?: string;
+  userAddress?: string;
+
+  @CreateDateColumn({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP(3)',
+  })
+  create_time?: Date;
 
   @UpdateDateColumn({
-    name: 'update_time',
+    type: 'datetime',
+    onUpdate: 'CURRENT_TIMESTAMP(3)',
   })
-  updateTime?: string;
+  update_time?: Date;
 }

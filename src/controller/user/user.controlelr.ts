@@ -6,9 +6,11 @@ import { JwtService } from '@midwayjs/jwt';
 import { User } from '../../entity/user';
 import { ISuccessResult } from '../../types/commonResult';
 
-import { GlobalResultCodeEnum, GlobalResultMessageEnum } from '../../enums/httpEnum';
+import { GlobalResultMessageEnum, GlobalResultCodeEnum } from '../../enums/httpEnum';
 
 import { UserService } from '../../service/user/user.service';
+
+// import { PrismaClient } from '@prisma/client';
 
 @Controller('/user')
 export class UserController {
@@ -27,8 +29,7 @@ export class UserController {
     //   pwd: userPwd,
     //   age: 14,
     // };
-    // const optLogger = this.ctx.getLogger('operateLogger');
-    // optLogger.error('测试打印日志。。。');
+
     // const bucketData = null;
     // await cos.getService(null, (_err, data) => {
     //   bucketData = data.Buckets;
@@ -52,11 +53,61 @@ export class UserController {
       userEmail: userEmail,
       userPhone: userPhone,
       userPwd: userPwd,
+      create_time: new Date(),
     };
     try {
       const result = await this.userService.insertUser(user);
       return result;
     } catch (error) {
+      const optLogger = this.ctx.getLogger('operateLogger');
+      optLogger.error(error);
+      return {
+        code: GlobalResultCodeEnum.ERROR,
+        message: GlobalResultMessageEnum.ERROR,
+      };
+    }
+
+    // const prisma = new PrismaClient();
+
+    // async function main() {
+    //   const result = await prisma.t_user.update({
+    //     where: { userId: 110 },
+    //     data: { userEmail: 'tees@.c' },
+    //   });
+    //   return result;
+    // }
+    // return main()
+    //   .then(async r => {
+    //     await prisma.$disconnect();
+    //     console.log(r);
+    //     return {
+    //       code: 0,
+    //       message: '注册成功',
+    //     };
+    //   })
+    //   .catch(async e => {
+    //     console.error(e);
+    //     await prisma.$disconnect();
+    //     return {
+    //       code: GlobalResultCodeEnum.ERROR,
+    //       message: GlobalResultMessageEnum.ERROR,
+    //     };
+    //   });
+  }
+
+  @Post('/updateUserInfo')
+  async updateUserById(@Body() body): Promise<ISuccessResult<any>> {
+    const userInfo: User = body;
+    try {
+      const updateRes = await this.userService.updateUserById(userInfo);
+      return {
+        code: 0,
+        message: '',
+        result: updateRes,
+      };
+    } catch (error) {
+      const optLogger = this.ctx.getLogger('operateLogger');
+      optLogger.error(error);
       return {
         code: GlobalResultCodeEnum.ERROR,
         message: GlobalResultMessageEnum.ERROR,
@@ -65,10 +116,21 @@ export class UserController {
   }
 
   @Get('/getUserInfo')
-  async getUser(@Query('id') id: number): Promise<ISuccessResult<User>> {
-    return {
-      code: 0,
-      message: '',
-    };
+  async getUser(@Query('id') id: number): Promise<ISuccessResult<User[]>> {
+    try {
+      const allUsers = await this.userService.queryAllUser();
+      return {
+        code: 0,
+        message: '',
+        result: allUsers,
+      };
+    } catch (error) {
+      const optLogger = this.ctx.getLogger('operateLogger');
+      optLogger.error(error);
+      return {
+        code: GlobalResultCodeEnum.ERROR,
+        message: GlobalResultMessageEnum.ERROR,
+      };
+    }
   }
 }

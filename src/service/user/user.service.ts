@@ -21,4 +21,36 @@ export class UserService {
       throw new Error(error);
     }
   }
+
+  async updateUserById(userInfo: User) {
+    try {
+      const queryResult = await this.userRepo.find({
+        where: {
+          userId: userInfo.userId,
+        },
+      });
+      if (queryResult == null) {
+        return {
+          code: GlobalResultCodeEnum.SUCCESS,
+          message: GlobalResultMessageEnum.NO_DATA,
+        };
+      }
+      await this.userRepo.save(queryResult);
+      return {
+        code: GlobalResultCodeEnum.SUCCESS,
+        message: GlobalResultMessageEnum.SUCCESS,
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async queryAllUser() {
+    try {
+      const result = await this.userRepo.find();
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
