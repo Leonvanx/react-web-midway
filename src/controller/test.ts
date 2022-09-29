@@ -2,11 +2,11 @@ import { Body, Controller, Inject, Post } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
 import { JwtService } from '@midwayjs/jwt';
 import { UserService } from '../service/user/user.service';
-import { ISuccessResult } from '../interface';
+import { ISuccessResult } from '../types/commonResult';
 
 // import { PrismaClient } from '@prisma/client';
 
-@Controller('/user')
+@Controller('/test')
 export class UserController {
   @Inject()
   ctx: Context;
@@ -15,7 +15,7 @@ export class UserController {
   @Inject()
   userService: UserService;
 
-  @Post('/login')
+  @Post()
   async loginUser(@Body() body): Promise<ISuccessResult<any>> {
     // const { userEmail, userPwd } = body;
     // const aUser: IUser = {

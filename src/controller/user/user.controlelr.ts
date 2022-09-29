@@ -2,12 +2,13 @@ import { Body, Controller, Get, Inject, Post, Query } from '@midwayjs/decorator'
 import { Context } from '@midwayjs/koa';
 import { JwtService } from '@midwayjs/jwt';
 
-import { User } from '../../entity/user';
+import { User } from '../../entity/user/user';
 import { ISuccessResult } from '../../types/commonResult';
 
 import { GlobalResultMessageEnum, GlobalResultCodeEnum } from '../../enums/httpEnum';
 
 import { UserService } from '../../service/user/user.service';
+import { UserControllerResMessage } from '../../enums/userEnum';
 
 // import { PrismaClient } from '@prisma/client';
 
@@ -21,25 +22,36 @@ export class UserController {
   userService: UserService;
 
   @Post('/login')
-  async loginUser(@Body() body): Promise<ISuccessResult<any>> {
-    return {
-      code: 0,
-      message: '登陆成功',
-      result: {},
-    };
+  async loginUser(@Body() body: User): Promise<ISuccessResult<any>> {
+    const { userEmail } = body;
+    const queryEmailResult = await this.userService.queryCountEmail(userEmail);
+    if (queryEmailResult === 0) {
+      return {
+        code: GlobalResultCodeEnum.ERROR,
+        message: UserControllerResMessage.EMAIL_NO_REGISTER,
+      };
+    }
+    const queryUserResult = await this.userService.queryUserByEmail(userEmail);
+    if (userEmail === queryUserResult.result.userEmail) {
+      const token = this.jwtService.signSync(queryUserResult);
+      this.ctx.set('token', token);
+      return {
+        code: GlobalResultCodeEnum.SUCCESS,
+        message: UserControllerResMessage.LOGIN_SUCCESS,
+      };
+    }
   }
 
   @Post('/register')
   async registerUser(@Body() body): Promise<ISuccessResult<any>> {
-    const { userEmail, userPhone, userName, userPwd } = body;
+    const { userEmail, userName, userPwd } = body;
     const user: User = {
       userName: userName,
-      userEmail: userEmail,
-      userPhone: userPhone,
       userPwd: userPwd,
+      userEmail: userEmail,
     };
     try {
-      const result = await this.userService.insertUser(user);
+      const result = await this.userService.registerUser(user);
       return result;
     } catch (error) {
       const optLogger = this.ctx.getLogger('operateLogger');
@@ -55,8 +67,8 @@ export class UserController {
   async updateUserById(@Body() body): Promise<ISuccessResult<any>> {
     const userInfo: User = body;
     try {
-      const updateRes = await this.userService.updateUserById(userInfo);
-      return updateRes;
+      const result = await this.userService.updateUserById(userInfo);
+      return result;
     } catch (error) {
       const optLogger = this.ctx.getLogger('operateLogger');
       optLogger.error(error);
@@ -67,15 +79,11 @@ export class UserController {
     }
   }
 
-  @Get('/getUserInfo')
-  async getUser(@Query('id') id: number): Promise<ISuccessResult<User[]>> {
+  @Get('/getUserList')
+  async getUserList(): Promise<ISuccessResult<User[]>> {
     try {
-      const allUsers = await this.userService.queryAllUser();
-      return {
-        code: GlobalResultCodeEnum.SUCCESS,
-        message: GlobalResultMessageEnum.SUCCESS,
-        result: allUsers,
-      };
+      const result = await this.userService.getUserList();
+      return result;
     } catch (error) {
       const optLogger = this.ctx.getLogger('operateLogger');
       optLogger.error(error);

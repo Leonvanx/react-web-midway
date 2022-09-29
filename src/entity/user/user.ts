@@ -17,7 +17,7 @@ export class User {
     length: 11,
     name: 'user_phone',
   })
-  userPhone: string;
+  userPhone?: string;
 
   @Column({
     length: 64,
@@ -39,12 +39,14 @@ export class User {
 
   @CreateDateColumn({
     type: 'datetime',
+    precision: 3,
     default: () => 'CURRENT_TIMESTAMP(3)',
   })
   create_time?: Date;
 
   @UpdateDateColumn({
     type: 'datetime',
+    precision: 3,
     onUpdate: 'CURRENT_TIMESTAMP(3)',
   })
   update_time?: Date;
