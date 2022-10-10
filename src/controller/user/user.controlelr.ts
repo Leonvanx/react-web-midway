@@ -24,20 +24,27 @@ export class UserController {
   @Post('/login')
   async loginUser(@Body() body: User): Promise<ISuccessResult<any>> {
     const { userEmail } = body;
-    const queryEmailResult = await this.userService.queryCountEmail(userEmail);
-    if (queryEmailResult === 0) {
+    try {
+      const queryEmailResult = await this.userService.queryCountEmail(userEmail);
+      if (queryEmailResult === 0) {
+        return {
+          code: GlobalResultCodeEnum.ERROR,
+          message: UserControllerResMessage.EMAIL_NO_REGISTER,
+        };
+      }
+      const queryUserResult = await this.userService.queryUserByEmail(userEmail);
+      if (userEmail === queryUserResult.result.userEmail) {
+        const token = this.jwtService.signSync(queryUserResult);
+        this.ctx.set('token', token);
+        return {
+          code: GlobalResultCodeEnum.SUCCESS,
+          message: UserControllerResMessage.LOGIN_SUCCESS,
+        };
+      }
+    } catch (error) {
       return {
         code: GlobalResultCodeEnum.ERROR,
-        message: UserControllerResMessage.EMAIL_NO_REGISTER,
-      };
-    }
-    const queryUserResult = await this.userService.queryUserByEmail(userEmail);
-    if (userEmail === queryUserResult.result.userEmail) {
-      const token = this.jwtService.signSync(queryUserResult);
-      this.ctx.set('token', token);
-      return {
-        code: GlobalResultCodeEnum.SUCCESS,
-        message: UserControllerResMessage.LOGIN_SUCCESS,
+        message: GlobalResultMessageEnum.ERROR,
       };
     }
   }
