@@ -39,15 +39,17 @@ export class User {
 
   @CreateDateColumn({
     type: 'datetime',
+    name: 'create_time',
     precision: 3,
     default: () => 'CURRENT_TIMESTAMP(3)',
   })
-  create_time?: Date;
+  createTime?: Date;
 
   @UpdateDateColumn({
     type: 'datetime',
+    name: 'update_time',
     precision: 3,
     onUpdate: 'CURRENT_TIMESTAMP(3)',
   })
-  update_time?: Date;
+  updateTime?: Date;
 }
