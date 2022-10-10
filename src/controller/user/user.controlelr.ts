@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post, Query } from '@midwayjs/decorator';
+import { Body, Controller, Get, Inject, Post } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
 import { JwtService } from '@midwayjs/jwt';
 
