@@ -16,8 +16,8 @@ export class UserService {
   /**
    *
    * @description 用户注册
-   * @param userData ：
-   * @returns : code,message
+   * @param userData
+   * @returns code,message
    */
   async registerUser(userData: User): Promise<ISuccessResult<any>> {
     try {
@@ -90,10 +90,31 @@ export class UserService {
     }
   }
 
+  async queryUserById(id: number): Promise<ISuccessResult<User>> {
+    try {
+      const queryResult: User = await this.userRepo.findOneBy({
+        userId: id,
+      });
+      if (queryResult == null) {
+        return {
+          code: GlobalResultCodeEnum.SUCCESS,
+          message: GlobalResultMessageEnum.NO_DATA,
+        };
+      }
+      return {
+        code: GlobalResultCodeEnum.SUCCESS,
+        message: GlobalResultMessageEnum.SUCCESS,
+        result: queryResult,
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async updateUserById(userInfo: User): Promise<ISuccessResult<any>> {
     try {
       const queryResult = await this.userRepo.findOneBy({
-        userId: userInfo.userId,
+        userId: 119,
       });
       if (queryResult == null) {
         return {
@@ -102,14 +123,6 @@ export class UserService {
         };
       }
       Object.assign(queryResult, userInfo);
-      console.log(queryResult);
-      // Object.keys(userInfo).forEach(key2 => {
-      //   Object.keys(queryResult).forEach(key1 => {
-      //     if (key1 === key2) {
-      //       queryResult[key1] = userInfo[key2];
-      //     }
-      //   });
-      // });
       await this.userRepo.save(queryResult);
       return {
         code: GlobalResultCodeEnum.SUCCESS,

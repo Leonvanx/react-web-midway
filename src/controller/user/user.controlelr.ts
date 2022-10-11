@@ -51,11 +51,13 @@ export class UserController {
 
   @Post('/register')
   async registerUser(@Body() body): Promise<ISuccessResult<any>> {
-    const { userEmail, userName, userPwd } = body;
+    const { userEmail, userName, userPwd, userPhone } = body;
     const user: User = {
       userName: userName,
       userPwd: userPwd,
       userEmail: userEmail,
+      userPhone: userPhone,
+      createTime: new Date(),
     };
     try {
       const result = await this.userService.registerUser(user);
@@ -72,9 +74,29 @@ export class UserController {
 
   @Post('/updateUserInfo')
   async updateUserById(@Body() body): Promise<ISuccessResult<any>> {
+    const parts = this.ctx.headers.authorization.trim().split(' ');
+    const [scheme, token] = parts;
+    scheme;
+    token;
     const userInfo: User = body;
     try {
       const result = await this.userService.updateUserById(userInfo);
+      return result;
+    } catch (error) {
+      const optLogger = this.ctx.getLogger('operateLogger');
+      optLogger.error(error);
+      return {
+        code: GlobalResultCodeEnum.ERROR,
+        message: GlobalResultMessageEnum.ERROR,
+      };
+    }
+  }
+
+  @Get('/getUserInfo')
+  async getUserInfo(@Body() body): Promise<ISuccessResult<User>> {
+    const { userId } = body;
+    try {
+      const result = await this.userService.queryUserById(userId);
       return result;
     } catch (error) {
       const optLogger = this.ctx.getLogger('operateLogger');

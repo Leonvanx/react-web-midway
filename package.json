@@ -15,7 +15,9 @@
     "@midwayjs/typeorm": "^3.5.1",
     "@midwayjs/validate": "^3.0.0",
     "@prisma/client": "^4.4.0",
+    "dayjs": "^1.11.5",
     "dotenv": "^16.0.1",
+    "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "prisma": "^4.4.0",
     "typeorm": "^0.3.9"

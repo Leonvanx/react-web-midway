@@ -13,6 +13,7 @@ export default {
     dataSource: {
       default: {
         type: 'mysql',
+        driver: require('mysql2'),
         host: 'localhost',
         port: 3306,
         username: 'xulf',
