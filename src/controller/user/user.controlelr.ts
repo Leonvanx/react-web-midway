@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Inject, Post } from '@midwayjs/decorator';
+import { Headers, Body, Controller, Get, Inject, Post } from '@midwayjs/decorator';
 import { Context } from '@midwayjs/koa';
 import { JwtService } from '@midwayjs/jwt';
 
 import { User } from '../../entity/user/user';
-import { ISuccessResult } from '../../types/commonResult';
+import { IPageParams, ISuccessResult } from '../../types/commonResult';
 
 import { GlobalResultMessageEnum, GlobalResultCodeEnum } from '../../enums/httpEnum';
 
@@ -22,25 +22,18 @@ export class UserController {
   userService: UserService;
 
   @Post('/login')
-  async loginUser(@Body() body: User): Promise<ISuccessResult<any>> {
-    const { userEmail } = body;
+  async login(@Body() body: User): Promise<ISuccessResult<any>> {
+    const { userName } = body;
     try {
-      const queryEmailResult = await this.userService.queryCountEmail(userEmail);
-      if (queryEmailResult === 0) {
+      const queryAccountResult = await this.userService.queryUserByLoginAccount(userName);
+      if (queryAccountResult.length === 0) {
         return {
           code: GlobalResultCodeEnum.ERROR,
-          message: UserControllerResMessage.EMAIL_NO_REGISTER,
+          message: UserControllerResMessage.LOGIN_ERROR,
         };
       }
-      const queryUserResult = await this.userService.queryUserByEmail(userEmail);
-      if (userEmail === queryUserResult.result.userEmail) {
-        const token = this.jwtService.signSync(queryUserResult);
-        this.ctx.set('token', token);
-        return {
-          code: GlobalResultCodeEnum.SUCCESS,
-          message: UserControllerResMessage.LOGIN_SUCCESS,
-        };
-      }
+      const loginResult = await this.userService.loginUser(body, queryAccountResult[0]);
+      return loginResult;
     } catch (error) {
       return {
         code: GlobalResultCodeEnum.ERROR,
@@ -50,7 +43,7 @@ export class UserController {
   }
 
   @Post('/register')
-  async registerUser(@Body() body): Promise<ISuccessResult<any>> {
+  async register(@Body() body: User): Promise<ISuccessResult<any>> {
     const { userEmail, userName, userPwd, userPhone } = body;
     const user: User = {
       userName: userName,
@@ -73,14 +66,9 @@ export class UserController {
   }
 
   @Post('/updateUserInfo')
-  async updateUserById(@Body() body): Promise<ISuccessResult<any>> {
-    const parts = this.ctx.headers.authorization.trim().split(' ');
-    const [scheme, token] = parts;
-    scheme;
-    token;
-    const userInfo: User = body;
+  async updateUserInfo(@Headers('authorization') token: string, @Body() body: User): Promise<ISuccessResult<any>> {
     try {
-      const result = await this.userService.updateUserById(userInfo);
+      const result = await this.userService.updateUserById(body, token);
       return result;
     } catch (error) {
       const optLogger = this.ctx.getLogger('operateLogger');
@@ -93,7 +81,7 @@ export class UserController {
   }
 
   @Get('/getUserInfo')
-  async getUserInfo(@Body() body): Promise<ISuccessResult<User>> {
+  async getUserInfo(@Body() body: User): Promise<ISuccessResult<User>> {
     const { userId } = body;
     try {
       const result = await this.userService.queryUserById(userId);
@@ -109,7 +97,8 @@ export class UserController {
   }
 
   @Get('/getUserList')
-  async getUserList(): Promise<ISuccessResult<User[]>> {
+  async getUserList(@Body() body: IPageParams): Promise<ISuccessResult<User[]>> {
+    // const { pageSize, pageNo } = body;
     try {
       const result = await this.userService.getUserList();
       return result;
