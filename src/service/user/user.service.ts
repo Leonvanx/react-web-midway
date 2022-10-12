@@ -1,4 +1,4 @@
-import { Provide } from '@midwayjs/decorator';
+import { Inject, Provide } from '@midwayjs/decorator';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -8,10 +8,17 @@ import { ISuccessResult } from './../../types/commonResult.d';
 import { GlobalResultCodeEnum, GlobalResultMessageEnum } from '../../enums/httpEnum';
 import { UserControllerResMessage } from '../../enums/userEnum';
 
+import { queryUserByLoginAccountSql } from './user.sql';
+import { JwtService } from '@midwayjs/jwt';
+import { Context } from '@midwayjs/koa';
 @Provide()
 export class UserService {
   @InjectEntityModel(User)
   userRepo: Repository<User>;
+  @Inject()
+  ctx: Context;
+  @Inject()
+  jwtService: JwtService;
 
   /**
    *
@@ -19,7 +26,7 @@ export class UserService {
    * @param userData
    * @returns code,message
    */
-  async registerUser(userData: User): Promise<ISuccessResult<any>> {
+  async registerUser(userData: User): Promise<ISuccessResult<null>> {
     try {
       const queryEmailCountResult = await this.queryCountEmail(userData.userEmail);
       if (queryEmailCountResult !== 0) {
@@ -38,11 +45,21 @@ export class UserService {
     }
   }
 
-  async loginUser(userEmail: string): Promise<ISuccessResult<any>> {
-    return {
-      code: GlobalResultCodeEnum.SUCCESS,
-      message: UserControllerResMessage.LOGIN_SUCCESS,
-    };
+  async loginUser(loginInfo: User, queryAccountResult: User): Promise<ISuccessResult<null>> {
+    const { userPwd } = loginInfo;
+    if (userPwd === queryAccountResult.userPwd) {
+      const token = this.jwtService.signSync(queryAccountResult);
+      this.ctx.set('authorization', token);
+      return {
+        code: GlobalResultCodeEnum.SUCCESS,
+        message: UserControllerResMessage.LOGIN_SUCCESS,
+      };
+    } else {
+      return {
+        code: GlobalResultCodeEnum.ERROR,
+        message: UserControllerResMessage.LOGIN_ERROR,
+      };
+    }
   }
 
   async getUserList(): Promise<ISuccessResult<User[]>> {
@@ -90,6 +107,19 @@ export class UserService {
     }
   }
 
+  async queryUserByLoginAccount(loginAccount: string): Promise<User[]> {
+    try {
+      const queryResult = await this.userRepo.query(queryUserByLoginAccountSql, [
+        loginAccount,
+        loginAccount,
+        loginAccount,
+      ]);
+      return queryResult;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async queryUserById(id: number): Promise<ISuccessResult<User>> {
     try {
       const queryResult: User = await this.userRepo.findOneBy({
@@ -111,8 +141,11 @@ export class UserService {
     }
   }
 
-  async updateUserById(userInfo: User): Promise<ISuccessResult<any>> {
+  async updateUserById(userInfo: User, token: string): Promise<ISuccessResult<null>> {
     try {
+      const userInfo = this.jwtService.decodeSync(token);
+      console.log(userInfo);
+      return;
       const queryResult = await this.userRepo.findOneBy({
         userId: 119,
       });
