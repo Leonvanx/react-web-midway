@@ -3,3 +3,8 @@ export interface ISuccessResult<T> {
   message: string;
   result?: T;
 }
+
+export interface IPageParams {
+  pageSize: number;
+  pageNo: number;
+}
