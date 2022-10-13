@@ -141,10 +141,11 @@ export class UserService {
     }
   }
 
-  async updateUserById(userInfo: User, token: string): Promise<ISuccessResult<null>> {
+  async updateUserById(userInfo: User, authorization: string): Promise<ISuccessResult<null>> {
     try {
+      const parts = authorization.trim().split(' ');
+      const [, token] = parts;
       const userInfo = this.jwtService.decodeSync(token);
-      console.log(userInfo);
       return;
       const queryResult = await this.userRepo.findOneBy({
         userId: 119,
