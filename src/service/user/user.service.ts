@@ -145,10 +145,10 @@ export class UserService {
     try {
       const parts = authorization.trim().split(' ');
       const [, token] = parts;
-      const userInfo = this.jwtService.decodeSync(token);
-      return;
+      const headerTokenInfo = this.jwtService.decodeSync(token);
       const queryResult = await this.userRepo.findOneBy({
-        userId: 119,
+        //@ts-ignore
+        userId: headerTokenInfo.userId,
       });
       if (queryResult == null) {
         return {
