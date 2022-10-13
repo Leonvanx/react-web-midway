@@ -22,7 +22,7 @@ export class UserController {
   userService: UserService;
 
   @Post('/login')
-  async login(@Body() body: User): Promise<ISuccessResult<any>> {
+  async login(@Body() body: User): Promise<ISuccessResult<null>> {
     const { userName } = body;
     try {
       const queryAccountResult = await this.userService.queryUserByLoginAccount(userName);
@@ -43,7 +43,7 @@ export class UserController {
   }
 
   @Post('/register')
-  async register(@Body() body: User): Promise<ISuccessResult<any>> {
+  async register(@Body() body: User): Promise<ISuccessResult<null>> {
     const { userEmail, userName, userPwd, userPhone } = body;
     const user: User = {
       userName: userName,
@@ -66,7 +66,7 @@ export class UserController {
   }
 
   @Post('/updateUserInfo')
-  async updateUserInfo(@Headers('authorization') token: string, @Body() body: User): Promise<ISuccessResult<any>> {
+  async updateUserInfo(@Headers('authorization') token: string, @Body() body: User): Promise<ISuccessResult<null>> {
     try {
       const result = await this.userService.updateUserById(body, token);
       return result;
