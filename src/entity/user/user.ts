@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import * as dayjs from 'dayjs';
 
+//@ts-ignore
 const dateTransformer = {
   from: (value: Date | number) => {
     return dayjs(typeof value === 'number' ? value : value.getTime()).format('YYYY-MM-DD HH:mm:ss');
@@ -47,8 +48,7 @@ export class User {
   @CreateDateColumn({
     type: 'datetime',
     name: 'create_time',
-    precision: 3,
-    transformer: dateTransformer,
+    update: false,
     default: () => 'CURRENT_TIMESTAMP(3)',
   })
   createTime?: Date;
@@ -56,8 +56,6 @@ export class User {
   @UpdateDateColumn({
     type: 'datetime',
     name: 'update_time',
-    precision: 3,
-    transformer: dateTransformer,
     default: () => 'CURRENT_TIMESTAMP(3)',
     onUpdate: 'CURRENT_TIMESTAMP(3)',
   })
